@@ -65,7 +65,7 @@ export default function RoomChat({ selectedUser = {} }) {
   const createSummaryChat = async ({ text, timestamp }) => {
     try {
       const payload = {
-        // chatId,
+        chatId,
         text,
         timestamp,
         senderId: loginUser.id,
@@ -124,7 +124,7 @@ export default function RoomChat({ selectedUser = {} }) {
       {/* Form Input */}
       <form
         className="row"
-        style={{ bottom: "20px", position: "absolute", width: "100%" }}
+        style={{ bottom: "2vh", position: "absolute", width: "100%" }}
       >
         <div className="col-11">
           <div className="form-check">

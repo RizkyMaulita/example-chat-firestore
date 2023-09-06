@@ -3,14 +3,7 @@ import Navbar from "../components/Navbar";
 import axios from "axios";
 import API_URL from "../config/api";
 import RoomChat from "../components/RoomChat";
-import {
-  collection,
-  documentId,
-  onSnapshot,
-  or,
-  query,
-  where,
-} from "firebase/firestore";
+import { collection, onSnapshot, or, query, where } from "firebase/firestore";
 import { db } from "../firebase";
 
 export default function HomePage() {
@@ -55,12 +48,12 @@ export default function HomePage() {
     <div>
       <Navbar />
       <div
-        className="row"
+        className="row w-100"
         style={{
-          height: "96vh",
+          height: "93vh",
         }}
       >
-        <div className="col-2" style={{ backgroundColor: "#e3d5ca" }}>
+        <div className="col-2 px-3" style={{ backgroundColor: "#e3d5ca" }}>
           {users?.map((user) => (
             <div
               key={user?.id}
@@ -73,18 +66,21 @@ export default function HomePage() {
               onClick={() => setSelectedUser(user)}
             >
               <h4>{user?.name}</h4>
-              <p
-                style={{
-                  fontSize: "0.9rem",
-                  fontStyle: "italic",
-                  textAlign: "right",
-                }}
-              >
-                {summaryChats.find(
-                  (chat) =>
-                    chat.receiverId == user.id || chat.senderId == user.id
-                )?.text || "-"}
-              </p>
+              <div className="d-flex justify-content-end mt-2">
+                <p
+                  style={{
+                    fontSize: "0.9rem",
+                    fontStyle: "italic",
+                    width: "90%",
+                  }}
+                  className="text-collapse"
+                >
+                  {summaryChats.find(
+                    (chat) =>
+                      chat.receiverId == user.id || chat.senderId == user.id
+                  )?.text || "-"}
+                </p>
+              </div>
             </div>
           ))}
         </div>
