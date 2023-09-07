@@ -32,13 +32,19 @@ export default function HomeScreen() {
   useFocusEffect(
     React.useCallback(() => {
       const q = query(
-        collection(db, "summary_chats")
-        // loginUser?.id
-        //   ? or(
-        //       where(`senderId`, "in", [loginUser?.id, Number(loginUser?.id)]),
-        //       where(`receiverId`, "in", [loginUser?.id, Number(loginUser?.id)])
-        //     )
-        //   : undefined
+        collection(db, "summary_chats"),
+        loginUser?.id
+          ? or(
+              where(`senderId`, "in", [
+                String(loginUser?.id),
+                Number(loginUser?.id),
+              ]),
+              where(`receiverId`, "in", [
+                String(loginUser?.id),
+                Number(loginUser?.id),
+              ])
+            )
+          : undefined
       );
       const unSub = onSnapshot(q, (doc) => {
         const summary = doc.docs.map((e) => e.data()) || [];

@@ -11,14 +11,17 @@ import useAuthMe from "../hooks/useAuthMe";
 import axios from "axios";
 import { API_URL } from "../config/api";
 import React, { useEffect, useState } from "react";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import Contact from "../components/Contact";
-
+import { generateChatId } from "../utils/chat";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../firebaseConfig";
 export default function CreateMessageScreen() {
   const [allUsers, setAllUsers] = useState([]);
   const [filterUsers, setFilterUsers] = useState([]);
   const [searchUser, setSearchUser] = useState("");
   const { loginUser } = useAuthMe();
+  const navigation = useNavigation();
 
   useFocusEffect(
     React.useCallback(() => {
@@ -50,8 +53,21 @@ export default function CreateMessageScreen() {
     }
   }, [searchUser]);
 
-  const _onPressContact = (user) => {
-    console.log(user, "<<< contact user");
+  const _onPressContact = async (user) => {
+    try {
+      // console.log(user, "<<< contact user");
+      const chatId = generateChatId(loginUser, user);
+      console.log(chatId);
+      const docRef = doc(db, "chats", chatId);
+      const findDoc = await getDoc(docRef);
+      navigation.navigate("RoomChat", {
+        userId: user?.id,
+        username: user?.name,
+        id: findDoc.exists() ? chatId : "",
+      });
+    } catch (error) {
+      console.log(error, "<<< error");
+    }
   };
 
   return (
