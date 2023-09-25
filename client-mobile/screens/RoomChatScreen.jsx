@@ -4,6 +4,8 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import BaseLayout from "../layouts/BaseLayout";
 import React, { useEffect, useState } from "react";
@@ -32,6 +34,7 @@ import {
   CLOUDINARY_CLOUD_NAME,
   CLOUDINARY_UPLOAD_PRESET,
 } from "../config/cloudinary";
+import { useHeaderHeight } from "@react-navigation/elements";
 
 export default function RoomChatScreen() {
   const { loginUser } = useAuthMe();
@@ -45,6 +48,7 @@ export default function RoomChatScreen() {
   const navigation = useNavigation();
   const [inputMsg, setInputMsg] = useState("");
   const [inputImg, setInputImg] = useState(null);
+  const height = useHeaderHeight();
 
   useFocusEffect(
     React.useCallback(() => {
@@ -206,31 +210,37 @@ export default function RoomChatScreen() {
 
   return (
     <BaseLayout>
-      <View style={{ flex: 11, paddingBottom: 10 }}>
-        <FlatList
-          inverted
-          data={[...messages].reverse()}
-          keyExtractor={(_, index) => chatId + index}
-          renderItem={({ item }) => (
-            <Message item={item} loginUser={loginUser} />
-          )}
-        />
-      </View>
-      <View style={[styles.inputMsgContainer, { flex: 1 }]}>
-        <TextInput
-          value={inputMsg}
-          onChangeText={setInputMsg}
-          style={[styles.inputMsgBox]}
-          multiline
-          onSubmitEditing={_onSendMessage}
-        />
-        <TouchableOpacity style={{ marginRight: 15 }} onPress={pickImage}>
-          <FontAwesome name={"image"} size={25} color={"gray"} />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={_onSendMessage}>
-          <FontAwesome name={"send-o"} size={25} color={"gray"} />
-        </TouchableOpacity>
-      </View>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={[{ flex: 1 }]}
+        keyboardVerticalOffset={height + 10}
+      >
+        <View style={{ flex: 11, paddingBottom: 10 }}>
+          <FlatList
+            inverted
+            data={[...messages].reverse()}
+            keyExtractor={(_, index) => chatId + index}
+            renderItem={({ item }) => (
+              <Message item={item} loginUser={loginUser} />
+            )}
+          />
+        </View>
+        <View style={[styles.inputMsgContainer, { flex: 1 }]}>
+          <TextInput
+            value={inputMsg}
+            onChangeText={setInputMsg}
+            style={[styles.inputMsgBox]}
+            multiline
+            onSubmitEditing={_onSendMessage}
+          />
+          <TouchableOpacity style={{ marginRight: 15 }} onPress={pickImage}>
+            <FontAwesome name={"image"} size={25} color={"gray"} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={_onSendMessage}>
+            <FontAwesome name={"send-o"} size={25} color={"gray"} />
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
     </BaseLayout>
   );
 }
