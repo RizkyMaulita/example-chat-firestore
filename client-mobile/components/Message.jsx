@@ -1,4 +1,4 @@
-import { Text, View } from "react-native";
+import { Image, Text, View } from "react-native";
 import { convertTimestamp } from "../utils/timestamp";
 
 export default function Message({ item = {}, loginUser = {} }) {
@@ -23,6 +23,17 @@ export default function Message({ item = {}, loginUser = {} }) {
           maxWidth: "80%",
         }}
       >
+        {item?.type === "image" && item?.fileURL?.length > 0 && (
+          <Image
+            source={{ uri: item?.fileURL }}
+            style={{
+              width: 200,
+              height: 200,
+              marginBottom: 10,
+              resizeMode: "contain",
+            }}
+          />
+        )}
         <Text
           style={{
             textAlign: isSender ? "right" : "left",
